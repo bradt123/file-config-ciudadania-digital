@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>API</title>
+</head>
+<body>
+    <h1 id="title">Peticion Servicios Ciudadania Digital</h1>
+    <button id="button">Get Data</button>
+    <ul id="list"></ul>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const button = document.getElementById('button');
+        const url_post = 'https://account-idetest.agetic.gob.bo/token';
+        const url_get = 'https://account-idetest.agetic.gob.bo/me';
+
+        let formdata = new URLSearchParams();
+        let headers = new Headers();
+
+        formdata.append('code', '1xySMXKFmyWI4BlxJturAZXZGMs4atPHFrXU8Zf7fD3');
+        formdata.append('redirect_uri', 'https://erp.obairlines.bo/sis_seguridad/vista/_adm/index.php');
+        formdata.append('grant_type', 'authorization_code');
+
+        headers.append('content-type', 'application/x-www-form-urlencoded');
+        headers.append('Authorization', 'Basic MjEyMjgyOTMtZDdmOS00MWYzLTg2NGUtZjkzYjM0MTlmZGZlOlNVYWEybnBDTDE5aGNxRnAwWUpPUHdrL2VwRUdibzNtL1EyZ1NZYlZYRUNDN2JKeFZxS0NodWJ1RDBnSE5ERUo=');
+
+
+        button.addEventListener('click', () => {
+            // llamanda metodo POST
+            fetch(url_post, {
+                method: 'POST',
+                headers: headers,
+                body: formdata
+            })
+            .then(resp => {
+                console.log(resp);
+                return resp.json();
+            })
+            .then(data_post => {
+                console.log('data', data_post);
+                // llamda metodo GET
+                fetch(url_get, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${data_post.access_token}`
+                    }
+                })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data_get => {
+                    console.log(data_get);
+                })
+            })
+            .catch(err => console.error(err))
+        })
+
+    </script>
+</body>
+</html>
